@@ -11,12 +11,12 @@ This API is useful for employee management equipped with 4 features, namely:
 this is table Design
 ```bash
 1.	Employee
-| Coloumn  | Type Data |
-| -------- | --------- |
-|EmployeeID | string  |
-|Name | string  |
-|Department |  string |
-|Email | string  |
+| Coloumn   | Type Data |
+| --------  | --------- |
+|EmployeeID | string    |
+|Name       | string    |
+|Department |  string   |
+|Email      | string    |
 ```
 
 
