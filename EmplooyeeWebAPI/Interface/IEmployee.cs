@@ -10,5 +10,6 @@ namespace EmplooyeeWebAPI.Interface
     {
         Task<IEnumerable<EmployeeData>> GetAllByCustomSearch(SearchCustom request);
         Task<ResponseBase> Insert(InsertEmployeeRequest reqeust);
+        Task<ResponseBase> Update(InsertEmployeeRequest reqeust);
     }
 }

@@ -72,10 +72,7 @@ namespace EmplooyeeWebAPI.Controllers
 
                 throw;
             }
-            
-        
         }
-
 
         [HttpDelete]
         public async Task<ActionResult> Delete(string employeeId) 
@@ -83,6 +80,18 @@ namespace EmplooyeeWebAPI.Controllers
             ResponseBase response = new ResponseBase();
             response = await _employee.Delete(employeeId);
             if (!response.IsSuccess) 
+            {
+                return BadRequest(response.Message);
+            }
+            return Ok(response);
+        }
+
+        [HttpPut("Update")]
+        public async Task<ActionResult> Update(InsertEmployeeRequest request) 
+        {
+            ResponseBase response = new ResponseBase();
+            response = await _employee.Update(request);
+            if (!response.IsSuccess)
             {
                 return BadRequest(response.Message);
             }

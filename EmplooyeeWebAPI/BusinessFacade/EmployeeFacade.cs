@@ -161,6 +161,47 @@ namespace EmplooyeeWebAPI.BusinessFacade
             return response;
         }
 
-       
+        public async Task<ResponseBase> Update(InsertEmployeeRequest reqeust)
+        {
+            ResponseBase response = new ResponseBase();
+            try
+            {
+                #region ValidationData
+                if (string.IsNullOrEmpty(reqeust.EmployeeId) || string.IsNullOrEmpty(reqeust.Name) || string.IsNullOrEmpty(reqeust.Departement) || string.IsNullOrEmpty(reqeust.Address) || string.IsNullOrEmpty(reqeust.Email))
+                {
+                    response.IsSuccess = false;
+                    response.Message = ("Reqeust Not Valid");
+                    return response;
+                }
+
+                var findData = await _context.Employees.SingleOrDefaultAsync(x => x.EmployeeId == reqeust.EmployeeId);
+                if (findData == null )
+                {
+                    response.IsSuccess = false;
+                    response.Message = ($"EmployeeID {reqeust.EmployeeId} Tidak Ditemukan");
+                    return response;
+                }
+                #endregion
+
+
+                findData.Address = reqeust.Address;
+                findData.Email = reqeust.Email;
+                findData.Departement = reqeust.Departement;
+                findData.Name = reqeust.Name;
+                findData.EmployeeId = reqeust.EmployeeId;
+
+            
+                await _context.SaveChangesAsync();
+                response.IsSuccess = true;
+                response.Message = "Update Data Success";
+            }
+            catch (Exception ex)
+            {
+
+                response.IsSuccess = false;
+                response.Message = "Update Data Failed";
+            }
+            return response;
+        }
     }
 }
