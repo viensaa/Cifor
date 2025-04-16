@@ -15,6 +15,7 @@ this is table Design
 | --------  | --------- |
 |EmployeeID | string    |
 |Name       | string    |
+|Address    |  string   |
 |Department |  string   |
 |Email      | string    |
 ```
