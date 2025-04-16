@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Employee Manager</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+        }
+
+        input, button {
+            margin: 5px;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Employee API UI</h2>
+
+    <h3>Get All Employees</h3>
+    <button onclick="getAll()">Get All</button>
+
+    <h3>Get by ID</h3>
+    <input id="getId" placeholder="Employee ID">
+    <button onclick="getById()">Get</button>
+
+    <h3>Search by Name & Department</h3>
+    <input id="name" placeholder="Name">
+    <input id="department" placeholder="Department">
+    <button onclick="search()">Search</button>
+
+    <h3>➕ Insert New Employee</h3>
+    <input id="addId" placeholder="Employee ID">
+    <input id="addName" placeholder="Name">
+    <input id="addDept" placeholder="Department">
+    <input id="addEmail" placeholder="Email">
+    <input id="addAddr" placeholder="Address">
+    <button onclick="add()">Insert</button>
+
+    <h3>✏️ Update Employee</h3>
+    <input id="updateId" placeholder="Employee ID">
+    <input id="updateName" placeholder="Name">
+    <input id="updateDept" placeholder="Department">
+    <input id="updateEmail" placeholder="Email">
+    <input id="updateAddr" placeholder="Address">
+    <button onclick="update()">Update</button>
+
+    <h3>Delete Employee</h3>
+    <input id="deleteId" placeholder="Employee ID">
+    <button onclick="remove()">Delete</button>
+
+
+    <h3> Response</h3>
+
+    <div><button onclick="clearance()">Clear</button></div>
+    <pre id="result"></pre>
+
+
+    <script>
+        const baseUrl = "https://localhost:7058/api/Employee";
+
+
+        function show(data) {
+            document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+        }
+        function clearance() {
+            //document.getElementById("result").textContent = "";
+            show("");
+        }
+
+        async function getAll() {
+            const res = await fetch(baseUrl);
+            const data = await res.json();
+            console.log(data);
+            show(data);
+        }
+
+        async function getById() {
+            const id = document.getElementById("getId").value;
+            const res = await fetch(`${baseUrl}/${id}`);
+
+            const contentType = res.headers.get("Content-Type");
+            let body;
+            if (contentType && contentType.includes("application/json")) {
+                body = await res.json();
+            } else {
+                body = await res.text();
+            }
+
+            if (!res.ok) {
+                show({
+                    error: typeof body === 'string' ? body : body.message
+                });
+                return;
+            }
+
+            show(body);
+        }
+
+        async function search() {
+            const name = document.getElementById("name").value;
+            const department = document.getElementById("department").value;
+            let query = [];
+            if (name) query.push(`name=${encodeURIComponent(name)}`);
+            if (department) query.push(`Departement=${encodeURIComponent(department)}`);
+            const url = `${baseUrl}/(Search)?${query.join("&")}`
+
+            const res = await fetch(`${baseUrl}/(Search)?${query.join("&")}`);
+            const contentType = res.headers.get("Content-Type");
+            let body;
+            if (contentType && contentType.includes("application/json")) {
+                body = await res.json();
+            } else {
+                body = await res.text();
+            }
+
+            if (!res.ok) {
+                show({
+                    error: typeof body === 'string' ? body : body.message
+                });
+                return;
+            }
+
+            show(body);
+        }
+
+        async function add() {
+            const body = {
+                EmployeeId: document.getElementById("addId").value,
+                Name: document.getElementById("addName").value,
+                Departement: document.getElementById("addDept").value,
+                Email: document.getElementById("addEmail").value,
+                Address: document.getElementById("addAddr").value,
+            };
+            const res = await fetch(baseUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+
+            const data = await res.json();
+            show(data);
+        }
+
+        async function update() {
+            const body = {
+                EmployeeId: document.getElementById("updateId").value,
+                Name: document.getElementById("updateName").value,
+                Departement: document.getElementById("updateDept").value,
+                Email: document.getElementById("updateEmail").value,
+                Address: document.getElementById("updateAddr").value,
+            };
+            const res = await fetch(`${baseUrl}/Update`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            show(data);
+        }
+
+        async function remove() {
+            const id = document.getElementById("deleteId").value;
+            const res = await fetch(`${baseUrl}?employeeId=${id}`, {
+                method: "DELETE"
+            });
+            const data = await res.text();
+            show(data);
+        }
+    </script>
+
+</body>
+</html>
